@@ -1,0 +1,5 @@
+{
+  "name": "GiftSherlock",
+  "description": "A psychological profiling engine that deduces the perfect gift for people who have everything based on their complaints, habits, and debate topics.",
+  "requestFramePermissions": []
+}
