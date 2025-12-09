@@ -1,22 +1,25 @@
 import React from 'react';
-import { Page, User } from '../types';
+import { Link, useLocation } from 'react-router-dom';
+import { User } from '../types';
 import { Gift, LogIn, LayoutDashboard, LogOut, History } from 'lucide-react';
 
 interface NavbarProps {
-  currentPage: Page;
-  setPage: (page: Page) => void;
   user: User | null;
-  onLoginClick: () => void;
   onLogout: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage, user, onLoginClick, onLogout }) => {
+export const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
+  const location = useLocation();
+  const path = location.pathname;
+
+  const isActive = (route: string) => path === route;
+
   return (
     <nav className="w-full fixed top-0 z-50 bg-midnight/80 backdrop-blur-md border-b border-white/10 font-sans">
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         {/* Logo */}
-        <div 
-          onClick={() => setPage(user ? Page.DASHBOARD : Page.LANDING)}
+        <Link
+          to={user ? "/dashboard" : "/"}
           className="flex items-center gap-2 cursor-pointer group"
         >
           <div className="bg-brand-primary/20 p-2 rounded-lg group-hover:bg-brand-primary/30 transition-colors">
@@ -25,28 +28,25 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage, user, onLo
           <span className="text-xl font-extrabold tracking-tight text-white">
             Gift<span className="text-brand-secondary">Sherlock</span>
           </span>
-        </div>
+        </Link>
 
-        {/* Desktop Links - Conditional Rendering */}
+        {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-8">
-          {!user ? (
+          {!user && (
             <>
-              <button 
-                onClick={() => setPage(Page.FEATURES)}
-                className={`text-sm font-semibold transition-colors ${currentPage === Page.FEATURES ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+              <Link
+                to="/features"
+                className={`text-sm font-semibold transition-colors ${isActive('/features') ? 'text-white' : 'text-slate-400 hover:text-white'}`}
               >
                 Features
-              </button>
-              <button 
-                onClick={() => setPage(Page.PRICING)}
-                className={`text-sm font-semibold transition-colors ${currentPage === Page.PRICING ? 'text-white' : 'text-slate-400 hover:text-white'}`}
+              </Link>
+              <Link
+                to="/pricing"
+                className={`text-sm font-semibold transition-colors ${isActive('/pricing') ? 'text-white' : 'text-slate-400 hover:text-white'}`}
               >
                 Pricing
-              </button>
+              </Link>
             </>
-          ) : (
-            // User is logged in, hide marketing links
-            null
           )}
         </div>
 
@@ -54,22 +54,22 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage, user, onLo
         <div className="flex items-center gap-4">
           {user ? (
             <div className="flex items-center gap-4">
-              <button 
-                onClick={() => setPage(Page.DASHBOARD)}
-                className={`flex items-center gap-2 text-sm font-semibold transition-colors ${currentPage === Page.DASHBOARD ? 'text-brand-secondary' : 'text-white hover:text-brand-secondary'}`}
+              <Link
+                to="/dashboard"
+                className={`flex items-center gap-2 text-sm font-semibold transition-colors ${isActive('/dashboard') ? 'text-brand-secondary' : 'text-white hover:text-brand-secondary'}`}
               >
                 <LayoutDashboard className="w-4 h-4" />
                 <span className="hidden sm:inline">New Deduction</span>
-              </button>
-              <button 
-                onClick={() => setPage(Page.HISTORY)}
-                className={`flex items-center gap-2 text-sm font-semibold transition-colors ${currentPage === Page.HISTORY ? 'text-brand-secondary' : 'text-white hover:text-brand-secondary'}`}
+              </Link>
+              <Link
+                to="/history"
+                className={`flex items-center gap-2 text-sm font-semibold transition-colors ${isActive('/history') ? 'text-brand-secondary' : 'text-white hover:text-brand-secondary'}`}
               >
                 <History className="w-4 h-4" />
                 <span className="hidden sm:inline">User History</span>
-              </button>
+              </Link>
               <div className="h-6 w-px bg-slate-700 mx-2"></div>
-              <button 
+              <button
                 onClick={onLogout}
                 className="text-slate-400 hover:text-white flex items-center gap-2 text-sm font-medium"
               >
@@ -78,13 +78,13 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage, user, onLo
               </button>
             </div>
           ) : (
-            <button
-              onClick={onLoginClick}
+            <Link
+              to="/login"
               className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-800 border border-slate-700 hover:bg-slate-700 text-white text-sm font-bold transition-all hover:scale-105"
             >
               <LogIn className="w-4 h-4" />
               Login
-            </button>
+            </Link>
           )}
         </div>
       </div>
